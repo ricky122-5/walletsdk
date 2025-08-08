@@ -1,0 +1,30 @@
+# Binaries
+walletsdk
+*.exe
+*.dll
+*.so
+*.dylib
+
+# Build output
+bin/
+build/
+dist/
+coverage/
+
+# Git metadata
+.git
+.gitignore
+
+# Editor and tooling
+.DS_Store
+.idea/
+.vscode/
+
+# Dependency caches
+vendor/
+node_modules/
+
+# Logs and temp files
+*.log
+tmp/
+
