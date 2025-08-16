@@ -5,22 +5,18 @@ import (
 	"fmt"
 )
 
-// BalanceRepository access persisted wallets for balance checks.
 type BalanceRepository interface {
 	GetByID(ctx context.Context, id string) (*WalletRecord, error)
 }
 
-// BalanceFetcher fetches balances from networks.
 type BalanceFetcher interface {
 	FetchBalance(ctx context.Context, rpcURL string, address string) (string, error)
 }
 
-// NetworkRegistry fetches network metadata.
 type NetworkRegistry interface {
 	Lookup(network string) (*Network, error)
 }
 
-// Network describes an accessible blockchain network.
 type Network struct {
 	Name        string
 	ChainID     int64
@@ -34,12 +30,10 @@ type balanceService struct {
 	registry NetworkRegistry
 }
 
-// BalanceService exposes balance operations.
 type BalanceService interface {
 	GetBalance(ctx context.Context, walletID string) (*Balance, error)
 }
 
-// NewBalanceService constructs the balance service.
 func NewBalanceService(repo BalanceRepository, fetcher BalanceFetcher, registry NetworkRegistry) BalanceService {
 	return &balanceService{
 		repo:     repo,
@@ -48,7 +42,6 @@ func NewBalanceService(repo BalanceRepository, fetcher BalanceFetcher, registry 
 	}
 }
 
-// GetBalance fetches the balance for a wallet using its network RPC.
 func (s *balanceService) GetBalance(ctx context.Context, walletID string) (*Balance, error) {
 	record, err := s.repo.GetByID(ctx, walletID)
 	if err != nil {

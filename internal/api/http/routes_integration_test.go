@@ -17,7 +17,6 @@ func TestWalletLifecycle(t *testing.T) {
 
 	client := server.Client()
 
-	// Create wallet
 	payload := map[string]string{"network": "base-sepolia"}
 	body, _ := json.Marshal(payload)
 
@@ -38,7 +37,6 @@ func TestWalletLifecycle(t *testing.T) {
 		t.Fatalf("expected network base-sepolia, got %s", wallet.Network)
 	}
 
-	// Fetch wallet
 	resp = testutil.MustDo(t, client, mustRequest(t, http.MethodGet, fmt.Sprintf("%s/v1/wallets/%s", server.URL, wallet.ID), nil))
 	defer resp.Body.Close()
 	testutil.AssertStatus(t, resp, http.StatusOK)
@@ -46,7 +44,6 @@ func TestWalletLifecycle(t *testing.T) {
 	var fetched map[string]interface{}
 	testutil.DecodeJSON(t, resp, &fetched)
 
-	// List wallets
 	resp = testutil.MustDo(t, client, mustRequest(t, http.MethodGet, fmt.Sprintf("%s/v1/wallets?network=%s", server.URL, "base-sepolia"), nil))
 	defer resp.Body.Close()
 	testutil.AssertStatus(t, resp, http.StatusOK)
@@ -57,7 +54,6 @@ func TestWalletLifecycle(t *testing.T) {
 		t.Fatalf("expected 1 wallet, got %d", len(wallets))
 	}
 
-	// Sign message
 	messagePayload := map[string]string{"message": "gm"}
 	msgBody, _ := json.Marshal(messagePayload)
 	resp = testutil.MustDo(t, client, mustRequest(t, http.MethodPost, fmt.Sprintf("%s/v1/wallets/%s/sign-message", server.URL, wallet.ID), bytes.NewReader(msgBody)))

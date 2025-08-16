@@ -9,7 +9,6 @@ import (
 	"github.com/rickyreddygari/walletsdk/internal/app"
 )
 
-// NewTestServer spins up an httptest server with in-memory dependencies configured by app container.
 func NewTestServer(t *testing.T) (*httptest.Server, func()) {
 	t.Helper()
 
@@ -27,7 +26,6 @@ func NewTestServer(t *testing.T) (*httptest.Server, func()) {
 	return server, cleanup
 }
 
-// MustDo performs an HTTP request and fails the test on error.
 func MustDo(t *testing.T, client *http.Client, req *http.Request) *http.Response {
 	t.Helper()
 
@@ -38,7 +36,6 @@ func MustDo(t *testing.T, client *http.Client, req *http.Request) *http.Response
 	return resp
 }
 
-// Background returns context.Background() but allows for future expansion.
 func Background() context.Context {
 	return context.Background()
 }

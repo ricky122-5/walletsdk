@@ -12,7 +12,6 @@ const (
 	defaultEthSepoliaRPC  = "https://ethereum-sepolia.blockpi.network/v1/rpc/public"
 )
 
-// AppConfig captures server level configuration.
 type AppConfig struct {
 	HTTPPort string
 	Env      string
@@ -20,7 +19,6 @@ type AppConfig struct {
 	Networks map[string]NetworkConfig
 }
 
-// NetworkConfig describes the RPC connection and metadata for a network.
 type NetworkConfig struct {
 	Name        string
 	ChainID     int64
@@ -28,7 +26,6 @@ type NetworkConfig struct {
 	NativeAsset string
 }
 
-// Lookup returns network configuration for a key.
 func (c *AppConfig) Lookup(key string) (*NetworkConfig, error) {
 	network, ok := c.Networks[key]
 	if !ok {
@@ -37,7 +34,6 @@ func (c *AppConfig) Lookup(key string) (*NetworkConfig, error) {
 	return &network, nil
 }
 
-// Load reads configuration from environment variables with sensible defaults.
 func Load() (*AppConfig, error) {
 	cfg := &AppConfig{
 		HTTPPort: getEnv("HTTP_PORT", defaultHTTPPort),

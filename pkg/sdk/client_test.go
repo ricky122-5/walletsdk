@@ -64,7 +64,6 @@ func TestClientWalletLifecycle(t *testing.T) {
 	}
 }
 
-// mockRoundTrip allows customizing responses for testing error cases.
 type mockRoundTrip struct {
 	status int
 	body   map[string]string

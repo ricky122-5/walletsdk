@@ -10,7 +10,6 @@ import (
 	"github.com/rickyreddygari/walletsdk/internal/storage/memory"
 )
 
-// Container wires dependencies for the application.
 type Container struct {
 	Config         *config.AppConfig
 	WalletService  service.WalletService
@@ -18,7 +17,6 @@ type Container struct {
 	HTTPServer     *httprouter.Server
 }
 
-// NewContainer builds the dependency graph for the server or lambda entrypoints.
 func NewContainer() (*Container, error) {
 	cfg, err := config.Load()
 	if err != nil {

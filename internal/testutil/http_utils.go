@@ -6,7 +6,6 @@ import (
 	"testing"
 )
 
-// DecodeJSON decodes a JSON response body into the supplied target.
 func DecodeJSON(t *testing.T, resp *http.Response, target interface{}) {
 	t.Helper()
 
@@ -16,7 +15,6 @@ func DecodeJSON(t *testing.T, resp *http.Response, target interface{}) {
 	}
 }
 
-// AssertStatus ensures the HTTP response status code matches expectation.
 func AssertStatus(t *testing.T, resp *http.Response, expected int) {
 	t.Helper()
 

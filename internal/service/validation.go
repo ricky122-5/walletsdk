@@ -8,7 +8,6 @@ import (
 
 var addressPattern = regexp.MustCompile(`^(0x)?[0-9a-fA-F]{40}$`)
 
-// ValidateTransaction ensures the transaction payload satisfies basic requirements.
 func ValidateTransaction(tx *Transaction) error {
 	if tx == nil {
 		return fmt.Errorf("%w: missing transaction", ErrValidation)

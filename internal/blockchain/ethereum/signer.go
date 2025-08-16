@@ -15,15 +15,12 @@ import (
 	"github.com/rickyreddygari/walletsdk/internal/service"
 )
 
-// Signer implements wallet generation and signing for Ethereum compatible networks.
 type Signer struct{}
 
-// NewSigner creates the Ethereum signer.
 func NewSigner() *Signer {
 	return &Signer{}
 }
 
-// NewWallet generates a fresh keypair and derives the address.
 func (s *Signer) NewWallet(network string) (*service.WalletRecord, error) {
 	key, err := ecdsa.GenerateKey(crypto.S256(), rand.Reader)
 	if err != nil {
@@ -41,7 +38,6 @@ func (s *Signer) NewWallet(network string) (*service.WalletRecord, error) {
 	}, nil
 }
 
-// SignMessage signs the payload using EIP-191.
 func (s *Signer) SignMessage(_ string, privKeyHex string, payload []byte) (*service.SignatureOutput, error) {
 	privKey, err := crypto.HexToECDSA(privKeyHex)
 	if err != nil {
@@ -75,7 +71,6 @@ func hashMessage(payload []byte) []byte {
 	return digest.Sum(nil)
 }
 
-// RecoverAddress helps verify signatures.
 func RecoverAddress(message []byte, signature []byte) (common.Address, error) {
 	if len(signature) != 65 {
 		return common.Address{}, fmt.Errorf("invalid signature length: %d", len(signature))
@@ -98,7 +93,6 @@ func RecoverAddress(message []byte, signature []byte) (common.Address, error) {
 	return crypto.PubkeyToAddress(*pubKey), nil
 }
 
-// SignTransaction signs an EIP-155 legacy transaction.
 func (s *Signer) SignTransaction(tx *service.Transaction, privKeyHex string) (string, error) {
 	privKey, err := crypto.HexToECDSA(privKeyHex)
 	if err != nil {

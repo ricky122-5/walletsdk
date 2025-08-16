@@ -18,7 +18,6 @@ type Client struct {
 	apiKey     string
 }
 
-// NewClient constructs the SDK client with default settings.
 func NewClient(baseURL string, opts ...Option) (*Client, error) {
 	if _, err := url.ParseRequestURI(baseURL); err != nil {
 		return nil, fmt.Errorf("invalid base URL: %w", err)
@@ -34,29 +33,24 @@ func NewClient(baseURL string, opts ...Option) (*Client, error) {
 	return client, nil
 }
 
-// Option configures Client instances.
 type Option func(*Client)
 
-// WithHTTPClient overrides the default HTTP client.
 func WithHTTPClient(httpClient *http.Client) Option {
 	return func(c *Client) {
 		c.httpClient = httpClient
 	}
 }
 
-// WithAPIKey sets an API key header for requests.
 func WithAPIKey(key string) Option {
 	return func(c *Client) {
 		c.apiKey = key
 	}
 }
 
-// CreateWalletRequest represents the payload for wallet creation.
 type CreateWalletRequest struct {
 	Network string `json:"network"`
 }
 
-// WalletResponse represents the wallet data returned from the service.
 type WalletResponse struct {
 	ID        string    `json:"id"`
 	Network   string    `json:"network"`
@@ -65,7 +59,6 @@ type WalletResponse struct {
 	CreatedAt time.Time `json:"createdAt"`
 }
 
-// CreateWallet creates a wallet on the service.
 func (c *Client) CreateWallet(req CreateWalletRequest) (*WalletResponse, error) {
 	payload, err := json.Marshal(req)
 	if err != nil {
@@ -103,27 +96,22 @@ func (c *Client) CreateWallet(req CreateWalletRequest) (*WalletResponse, error) 
 	return &wallet, nil
 }
 
-// WalletListResponse wraps the array response from the service.
 type WalletListResponse []WalletResponse
 
-// SignatureResponse represents the signing output.
 type SignatureResponse struct {
 	Signature string `json:"signature"`
 	PublicKey string `json:"publicKey"`
 }
 
-// BalanceResponse captures the balance payload.
 type BalanceResponse struct {
 	Asset  string `json:"asset"`
 	Amount string `json:"amount"`
 }
 
-// SignMessageRequest represents a signing request.
 type SignMessageRequest struct {
 	Message string `json:"message"`
 }
 
-// Transaction mirrors the service transaction payload.
 type Transaction struct {
 	ChainID  int64  `json:"chainId"`
 	From     string `json:"from,omitempty"`

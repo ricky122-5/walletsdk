@@ -9,18 +9,15 @@ import (
 	"github.com/rickyreddygari/walletsdk/internal/service"
 )
 
-// RouteBuilder wires handlers with services.
 type RouteBuilder struct {
 	wallets  service.WalletService
 	balances service.BalanceService
 }
 
-// NewRouteBuilder constructs the router builder.
 func NewRouteBuilder(wallets service.WalletService, balances service.BalanceService) *RouteBuilder {
 	return &RouteBuilder{wallets: wallets, balances: balances}
 }
 
-// Register mounts endpoints on the router.
 func (b *RouteBuilder) Register(r *chi.Mux) {
 	r.Route("/v1", func(r chi.Router) {
 		r.Post("/wallets", b.createWallet)
