@@ -1,14 +1,18 @@
 package main
 
 import (
-    "fmt"
-    "log"
-    "net/http"
-    "os"
-    "os/signal"
-    "syscall"
+	"context"
+	"log"
+	"net"
+	"net/http"
+	"os/signal"
+	"sync"
+	"syscall"
+	"time"
 
-    "github.com/rickyreddygari/walletsdk/internal/app"
+	"google.golang.org/grpc"
+
+	"github.com/rickyreddygari/walletsdk/internal/app"
 )
 
 func main() {
@@ -17,22 +21,49 @@ func main() {
 		log.Fatalf("bootstrap container: %v", err)
 	}
 
-	server := container.HTTPServer
-	port := container.Config.HTTPPort
+	httpSrv := &http.Server{
+		Addr:    ":" + container.Config.HTTPPort,
+		Handler: container.HTTPServer,
+	}
 
+	lis, err := net.Listen("tcp", ":"+container.Config.GRPCPort)
+	if err != nil {
+		log.Fatalf("listen grpc: %v", err)
+	}
+
+	var wg sync.WaitGroup
+	ctx, stop := signal.NotifyContext(context.Background(), syscall.SIGINT, syscall.SIGTERM)
+	defer stop()
+
+	wg.Add(1)
 	go func() {
-		log.Printf("listening on :%s", port)
-		if err := http.ListenAndServe(":"+port, server); err != nil && err != http.ErrServerClosed {
-			log.Fatalf("serve http: %v", err)
+		defer wg.Done()
+		log.Printf("http listening on %s", httpSrv.Addr)
+		if err := httpSrv.ListenAndServe(); err != nil && err != http.ErrServerClosed {
+			log.Printf("http server error: %v", err)
 		}
 	}()
 
-	waitForShutdown()
-}
+	wg.Add(1)
+	go func() {
+		defer wg.Done()
+		log.Printf("grpc listening on %s", lis.Addr())
+		if err := container.GRPCServer.Serve(lis); err != nil && err != grpc.ErrServerStopped {
+			log.Printf("grpc server error: %v", err)
+		}
+	}()
 
-func waitForShutdown() {
-	sigs := make(chan os.Signal, 1)
-	signal.Notify(sigs, syscall.SIGINT, syscall.SIGTERM)
-	sig := <-sigs
-	fmt.Printf("received signal %s, shutting down\n", sig)
+	<-ctx.Done()
+	log.Println("shutdown signal received")
+
+	shutdownCtx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+
+	if err := httpSrv.Shutdown(shutdownCtx); err != nil {
+		log.Printf("http shutdown error: %v", err)
+	}
+	container.GRPCServer.GracefulStop()
+	lis.Close()
+
+	wg.Wait()
 }

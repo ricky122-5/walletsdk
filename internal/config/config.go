@@ -7,6 +7,7 @@ import (
 
 const (
 	defaultHTTPPort       = "8080"
+	defaultGRPCPort       = "9090"
 	defaultEnv            = "local"
 	defaultBaseSepoliaRPC = "https://sepolia.base.org"
 	defaultEthSepoliaRPC  = "https://ethereum-sepolia.blockpi.network/v1/rpc/public"
@@ -14,6 +15,7 @@ const (
 
 type AppConfig struct {
 	HTTPPort string
+	GRPCPort string
 	Env      string
 
 	Networks map[string]NetworkConfig
@@ -37,6 +39,7 @@ func (c *AppConfig) Lookup(key string) (*NetworkConfig, error) {
 func Load() (*AppConfig, error) {
 	cfg := &AppConfig{
 		HTTPPort: getEnv("HTTP_PORT", defaultHTTPPort),
+		GRPCPort: getEnv("GRPC_PORT", defaultGRPCPort),
 		Env:      getEnv("APP_ENV", defaultEnv),
 		Networks: map[string]NetworkConfig{
 			"base-sepolia": {

@@ -12,7 +12,7 @@ import (
 )
 
 func TestWalletLifecycle(t *testing.T) {
-	server, cleanup := testutil.NewTestServer(t)
+    server, _, cleanup := testutil.NewTestServer(t)
 	defer cleanup()
 
 	client := server.Client()

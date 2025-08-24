@@ -1,0 +1,82 @@
+syntax = "proto3";
+
+package wallet.v1;
+
+option go_package = "github.com/rickyreddygari/walletsdk/internal/api/grpcpb";
+
+service WalletService {
+  rpc CreateWallet(CreateWalletRequest) returns (WalletResponse);
+  rpc GetWallet(GetWalletRequest) returns (WalletResponse);
+  rpc ListWallets(ListWalletsRequest) returns (ListWalletsResponse);
+  rpc SignMessage(SignMessageRequest) returns (SignMessageResponse);
+  rpc SignTransaction(SignTransactionRequest) returns (SignTransactionResponse);
+  rpc GetBalance(GetBalanceRequest) returns (GetBalanceResponse);
+}
+
+message CreateWalletRequest {
+  string network = 1;
+}
+
+message WalletResponse {
+  string id = 1;
+  string network = 2;
+  string address = 3;
+  string public_key = 4;
+  int64 created_at_unix = 5;
+}
+
+message GetWalletRequest {
+  string wallet_id = 1;
+}
+
+message ListWalletsRequest {
+  string network = 1;
+}
+
+message ListWalletsResponse {
+  repeated WalletResponse wallets = 1;
+}
+
+message SignMessageRequest {
+  string wallet_id = 1;
+  bytes payload = 2;
+}
+
+message SignMessageResponse {
+  string signature = 1;
+  string public_key = 2;
+}
+
+message SignTransactionRequest {
+  string wallet_id = 1;
+  Transaction transaction = 2;
+}
+
+message SignTransactionResponse {
+  string signed_transaction = 1;
+}
+
+message GetBalanceRequest {
+  string wallet_id = 1;
+}
+
+message GetBalanceResponse {
+  Balance balance = 1;
+}
+
+message Balance {
+  string asset = 1;
+  string amount = 2;
+}
+
+message Transaction {
+  int64 chain_id = 1;
+  string from = 2;
+  string to = 3;
+  string value = 4;
+  string data = 5;
+  uint64 gas_limit = 6;
+  string gas_price = 7;
+  uint64 nonce = 8;
+}
+
