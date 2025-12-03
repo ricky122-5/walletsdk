@@ -1,6 +1,6 @@
 # Wallet SDK Service
 
-Wallet-as-a-Service style backend that generates wallets, signs payloads, and exposes a Go SDK for builders.
+Wallet-as-a-Service style backend that generates wallets, signs payloads, and exposes a Go SDK for builders. This is a Demo project, wouldn't recommend using in prod before changing the in-memory storage system. Happy building!
 
 ## Quick Start
 
